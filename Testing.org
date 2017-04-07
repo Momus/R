@@ -1,0 +1,73 @@
+* Quizes
+*** 01 One
+*** 03 Three
+    - 6.588
+    - apply(iris[, 1:4], 2, mean)
+    - sapply(split(mtcars$mpg, mtcars$cyl), mean)
+    - 126.5779
+    - 
+    
+* Programming Assignments 
+
+*** Week 2
+
+***** Part 1: 'pollutantmean'
+      Write a function, 'pollutantmean' that calculates the mean of a
+      pollutant across list of monitors (csv files). Given three arguments:
+       - directory
+       - pollutant
+       - id
+Returns
+ - mean of pollutant across monitors
+   - Ignore missing value (NA)
+   
+******* Prototype
+#+NAME: Part 1
+ #+BEGIN_SRC R :tangle  ./rprog031/R/Ex1.R
+pollutantmean <- function(directory, pollutant, id = 1:332) {
+        ## 'directory' is a character vector of length 1 indicating
+        ## the location of the CSV files
+
+        ## 'pollutant' is a character vector of length 1 indicating
+        ## the name of the pollutant for which we will calculate the
+        ## mean; either "sulfate" or "nitrate".
+
+        ## 'id' is an integer vector indicating the monitor ID numbers
+        ## to be used
+
+        ## Return the mean of the pollutant across all monitors list
+        ## in the 'id' vector (ignoring NA values)
+        ## NOTE: Do not round the result!
+}
+ #+END_SRC
+
+***** Part 2: 
+Write a function that reads a directory full of files and reports the
+number of completely observed cases in each data file. The function
+should return a data frame where the first column is the name of the
+file and the second column is the number of complete cases. A
+prototype of this function follows
+#+NAME: Part 2
+ #+BEGIN_SRC R :tangle  ./rprog031/R/Ex1.R
+complete <- function(directory, id = 1:332) {
+        ## 'directory' is a character vector of length 1 indicating
+        ## the location of the CSV files
+
+        ## 'id' is an integer vector indicating the monitor ID numbers
+        ## to be used
+        
+        ## Return a data frame of the form:
+        ## id nobs
+        ## 1  117
+        ## 2  1041
+        ## ...
+        ## where 'id' is the monitor ID number and 'nobs' is the
+        ## number of complete cases
+}
+ #+END_SRC
+
+
+
+*** Week 4
+
+* swirl

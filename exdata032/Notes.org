@@ -1,0 +1,19 @@
+* Tuftie's Principles
+  Edward Tuftie's "Beautiful Evidence"
+*** Show Comparisons
+    - Evidence is always relative
+    - Always ask "compared to what"?
+    - e.g. two box plot "control" vs what is being studied
+*** Show causality, mechanism, explanation, systematic stucture
+    Show how you think the world works -- causal framework for
+    thinking about question.
+*** Show multivatiate data:
+    or, show as much data on a plot as you possibly can. The world is complex.
+*** Integration of Evidence
+    Combine different modes of evidence to make your graphic as
+    information rich as possible. Don't let the tools drive the analysis.
+*** Describe and document the evidence you present:
+    Include the R source you 
+*** Content is King
+    Analytical presintations ultimately stand and fall on the quality
+    of their content.

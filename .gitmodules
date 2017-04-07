@@ -1,0 +1,6 @@
+[submodule "ProgrammingAssignment2"]
+	path = rprog031/ProgrammingAssignment2
+	url = git@github.com:Momus/ProgrammingAssignment2.git
+[submodule "exdata032/ExData_Plotting1"]
+	path = exdata032/ExData_Plotting1
+	url = git@github.com:Momus/ExData_Plotting1.git

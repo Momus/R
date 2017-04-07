@@ -1,0 +1,85 @@
+* Emacs Speaks Statistics Tutorial
+*** Installation
+***** Melpa (package-install ess)
+***** use-package
+      #+BEGIN_SRC emacs-lisp
+        (use-package ess
+          :ensure t
+          :init (require 'ess-site))
+      #+END_SRC
+***** Swirl
+******* Set a default [[https://cran.r-project.org/mirrors.html][mirror]]
+        Make sure that the package `openssl-devel` is installed, then:
+        ~/.Rprofile
+        /usr/lib64/R/library/base/R/Rprofile
+        #+BEGIN_SRC R
+          # set a CRAN mirror
+           local({r <- getOption("repos")
+                 r["CRAN"] <- "http://my.local.cran"
+                 options(repos=r)})
+        #+END_SRC
+* Notes
+*** R Crash Syntax
+***** R's Atomic Classes
+******* Character
+******* Numeric
+        - Double precision real numbers
+        - Most numbers, unless specifically labeled as integers
+        - Inf :: is a special number that represents infinity:
+                 > 1 / 0
+                 [1] Inf
+        - NaN :: "not a number" can also be used for missing value
+                 > 0 / 0
+                 [1] NaN
+******* Integer
+******* Boolean
+***** Vectors
+      The most basic R object. Everything is really a vector. Vector can
+      only contain objects of the same type.
+***** Lists
+      Contain objects of multiple types. More like Java Arrays?
+***** Factors
+      Represent categorical data:
+      #+BEGIN_SRC text
+        x <- factor(c("yes","yes","yes","yes","yes","no", "no", "no", "no"), levels = c("yes", "no"))
+        > table(x)
+        x
+        yes  no 
+          5   4 
+      #+END_SRC
+***** NaN and NA
+      NaN is NA but NA is not NaN
+***** DataFrames
+      Store tabular data. 
+      - Specialized type of list where every element has to have the
+        same length: each element is a column, and the length is the
+        number of rows.
+      - Can store different types of objects in each column.
+      - Attributes include column names and row names.
+      - Usually created with read.table() or read.csv()
+      - Use data.matrix() not as.matrix() to coerce frame to matrix.
+***** Names!
+      - Objects and lists can have names. It's cool but weird:
+        #+BEGIN_SRC text
+          > x <- 1:3
+          > names(x)
+          NULL
+          > names(x) <- c("Me", "Myself", "I")
+          > x
+              Me Myself      I 
+               1      2      3 
+          > names(x)
+          [1] "Me"     "Myself" "I"     
+        #+END_SRC
+      - column and row names can be set seperatly: colnames() rownames()
+***** !!!The Whole POINT: [[https://www.jstatsoft.org/article/view/v059i10][TIDY]] DATA!!!!
+******* Each variable has a column
+******* Each observation has a row
+******* Each type of observational unit forms a table
+******* Useful Tidy Data Libraries:
+        - ggplot2 :: plotting
+        - magrittr :: %>% operator for chaining functions together
+        - dplyr :: working with data frames
+        - tidyr :: tidy data with spread() and gather()functions
+*** Data Manipulation
+Here is a change

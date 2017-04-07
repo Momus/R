@@ -1,0 +1,9 @@
+Package: exdata032
+Title: Functions necessary to complete Exploratory Data Analysis Course
+Version: 0.0.0.9000
+Authors@R: person("Dmitri", "Brengauz", email = "dmitri@momus.net", role = c("aut", "cre"))
+Description: This package will help me pass the class. Hooray!
+Depends: R (>= 3.2.1)
+License: GPL-3
+LazyData: true
+Suggests: testthat

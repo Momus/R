@@ -1,0 +1,17 @@
+Package: rprog031
+Title: Programing Exercises for RPROG 031
+Version: 0.0.0.9001
+Authors@R: person("Dmitri", "Brengauz", email = "dmitri@momus.net", 
+  role = c("aut", "cre"))
+Description: The files are organized by assignment rather than by
+             function. The sole purpose of all of them is that when
+             the submit() funciton is called, all the tests
+             pass. Major version numbers correspond to succesful submissions.
+Depends: R (>= 3.2.1)
+License: GPL-3
+LazyData: true
+Imports: 
+        dplyr (>= 0.3.0.1)
+Suggests: 
+        ggvis,
+    testthat
