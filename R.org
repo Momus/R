@@ -82,4 +82,3 @@
         - dplyr :: working with data frames
         - tidyr :: tidy data with spread() and gather()functions
 *** Data Manipulation
-Here is a change
