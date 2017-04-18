@@ -1,3 +1,10 @@
+#+TITLE: ALL My R Learnings.
+#+AUTHOR: Dmitri Brengauz
+#+STARTUP: hideblocks
+#+BABEL: :session *R*
+
+* R install thingies
+  
 * Emacs Speaks Statistics Tutorial
 *** Installation
 ***** Melpa (package-install ess)
@@ -19,66 +26,252 @@
                  options(repos=r)})
         #+END_SRC
 * Notes
-*** R Crash Syntax
-***** R's Atomic Classes
-******* Character
-******* Numeric
-        - Double precision real numbers
-        - Most numbers, unless specifically labeled as integers
-        - Inf :: is a special number that represents infinity:
-                 > 1 / 0
-                 [1] Inf
-        - NaN :: "not a number" can also be used for missing value
-                 > 0 / 0
-                 [1] NaN
-******* Integer
-******* Boolean
-***** Vectors
-      The most basic R object. Everything is really a vector. Vector can
-      only contain objects of the same type.
-***** Lists
-      Contain objects of multiple types. More like Java Arrays?
-***** Factors
-      Represent categorical data:
-      #+BEGIN_SRC text
-        x <- factor(c("yes","yes","yes","yes","yes","no", "no", "no", "no"), levels = c("yes", "no"))
-        > table(x)
-        x
-        yes  no 
-          5   4 
-      #+END_SRC
-***** NaN and NA
-      NaN is NA but NA is not NaN
-***** DataFrames
-      Store tabular data. 
-      - Specialized type of list where every element has to have the
-        same length: each element is a column, and the length is the
-        number of rows.
-      - Can store different types of objects in each column.
-      - Attributes include column names and row names.
-      - Usually created with read.table() or read.csv()
-      - Use data.matrix() not as.matrix() to coerce frame to matrix.
-***** Names!
-      - Objects and lists can have names. It's cool but weird:
+*** Coursera
+***** R Crash Syntax
+******* R's Atomic Classes
+********* Character
+********* Numeric
+          - Double precision real numbers
+          - Most numbers, unless specifically labeled as integers
+          - Inf :: is a special number that represents infinity:
+                   > 1 / 0
+                   [1] Inf
+          - NaN :: "not a number" can also be used for missing value
+                   > 0 / 0
+                   [1] NaN
+********* Integer
+********* Boolean
+******* Vectors
+        The most basic R object. Everything is really a vector. Vector can
+        only contain objects of the same type.
+******* Lists
+        Contain objects of multiple types. More like Java Arrays?
+******* Factors
+        Represent categorical data:
         #+BEGIN_SRC text
-          > x <- 1:3
-          > names(x)
-          NULL
-          > names(x) <- c("Me", "Myself", "I")
-          > x
-              Me Myself      I 
-               1      2      3 
-          > names(x)
-          [1] "Me"     "Myself" "I"     
+          x <- factor(c("yes","yes","yes","yes","yes","no", "no", "no", "no"), levels = c("yes", "no"))
+          > table(x)
+          x
+          yes  no 
+            5   4 
         #+END_SRC
-      - column and row names can be set seperatly: colnames() rownames()
-***** !!!The Whole POINT: [[https://www.jstatsoft.org/article/view/v059i10][TIDY]] DATA!!!!
-******* Each variable has a column
-******* Each observation has a row
-******* Each type of observational unit forms a table
-******* Useful Tidy Data Libraries:
-        - ggplot2 :: plotting
-        - magrittr :: %>% operator for chaining functions together
-        - dplyr :: working with data frames
-        - tidyr :: tidy data with spread() and gather()functions
-*** Data Manipulation
+******* NaN and NA
+        NaN is NA but NA is not NaN
+******* DataFrames
+        Store tabular data. 
+        - Specialized type of list where every element has to have the
+          same length: each element is a column, and the length is the
+          number of rows.
+        - Can store different types of objects in each column.
+        - Attributes include column names and row names.
+        - Usually created with read.table() or read.csv()
+        - Use data.matrix() not as.matrix() to coerce frame to matrix.
+******* Names!
+        - Objects and lists can have names. It's cool but weird:
+          #+BEGIN_SRC text
+            > x <- 1:3
+            > names(x)
+            NULL
+            > names(x) <- c("Me", "Myself", "I")
+            > x
+                Me Myself      I 
+                 1      2      3 
+            > names(x)
+            [1] "Me"     "Myself" "I"     
+          #+END_SRC
+        - column and row names can be set seperatly: colnames() rownames()
+******* !!!The Whole POINT: [[https://www.jstatsoft.org/article/view/v059i10][TIDY]] DATA!!!!
+********* Each variable has a column
+********* Each observation has a row
+********* Each type of observational unit forms a table
+********* Useful Tidy Data Libraries:
+          - ggplot2 :: plotting
+          - magrittr :: %>% operator for chaining functions together
+          - dplyr :: working with data frames
+          - tidyr :: tidy data with spread() and gather()functions
+******* Data Manipulation
+********* dplyr v tidyverse
+          - dplyr is "easer" and produces "tidier code."
+
+***** R-Prog-Env
+******* Quiz
+        :PROPERTIES:
+        :DIR: ./R-env/Week4Quiz
+        :END:
+        1. What is average Arithmetic.Mean for “Bromine PM2.5 LC” in
+           the state of Wisconsin in this dataset?
+           1. Use the readr package to read the
+              daily_SPEC_2014.csv.bz2 data file in to R
+              #+BEGIN_SRC R
+                if (!exists("daily_SPEC_2014"))
+                {daily_SPEC_2014 <- read.csv("./data/daily_SPEC_2014.csv.bz2") }
+                print("Object Creation Finished!")
+                format(object.size(daily_SPEC_2014), units = "auto")
+              #+END_SRC
+
+                #+RESULTS:
+
+           2. average Arithmetic.Mean
+              #+BEGIN_SRC R
+                mean((daily_SPEC_2014 
+                      %>% filter(`Parameter.Name` == "Bromine PM2.5 LC"
+                               , `State.Name` == "Wisconsin") 
+
+                      %>% select(`Arithmetic.Mean`))$Arithmetic.Mean)
+              #+END_SRC
+
+        2. Which constituent Parameter.Name has the highest average level?a
+           1. Calculate the average of each chemical constituent
+              across all states, monitoring sites and all time points.
+
+           2. Constituent Parameter.Name with the highest average level?
+              #+BEGIN_SRC R
+                head(daily_SPEC_2014 %>%
+                     group_by(`Parameter.Name`) %>%
+                     summarise(mean = mean(`Arithmetic.Mean`)) %>%
+                     arrange(desc(mean)), 17)
+              #+END_SRC
+        3. Which monitoring site has the highest average level of
+           “Sulfate PM2.5 LC” across all time?
+           Indicate the state code, county code, and site number.
+           #+BEGIN_SRC R
+             head(daily_SPEC_2014 %>%
+                  filter(`Parameter.Name` == "Sulfate PM2.5 LC") %>%
+                  group_by(`State.Code`, `County.Code`, `Site.Num`) %>%
+                  summarise(mean = mean(`Arithmetic.Mean`)) %>%
+                  arrange(desc(mean)))
+           #+END_SRC
+        4. What is the absolute difference in the average levels of
+           “EC PM2.5 LC TOR” between the states California and
+           Arizona, across all time and all monitoring sites?
+           #+BEGIN_SRC R
+             ca_vs_az <- daily_SPEC_2014 %>%
+                 filter(`Parameter.Name` == "EC PM2.5 LC TOR"
+                      , grepl('Calif|Ariz', `State.Name` )) %>%
+                 group_by(`State.Name`) %>%
+                 summarise(mean = mean(`Arithmetic.Mean`)) %>%
+                 arrange(desc(mean))
+
+             print(ca_vs_az[1,2] - ca_vs_az[2,2])
+           #+END_SRC
+        5. What is the median level of “OC PM2.5 LC TOR” in the
+           western United States, across all time? Define western as
+           any monitoring location that has a Longitude LESS THAN
+           -100.
+           #+BEGIN_SRC R
+             median((daily_SPEC_2014 %>%
+                     filter(`Parameter.Name` == "OC PM2.5 LC TOR"
+                          , `Longitude` < -100) %>%
+                     select(`Arithmetic.Mean`))$Arithmetic.Mean)
+           #+END_SRC
+        6. How many monitoring sites are labelled as both RESIDENTIAL
+           for "Land Use" and SUBURBAN for "Location Setting"?
+           #+BEGIN_SRC R
+             dim(aqs_sites %>%
+                 filter(`Land Use` == "RESIDENTIAL"
+                      , `Location Setting` == "SUBURBAN"))
+           #+END_SRC
+        7. What is the median level of “EC PM2.5 LC TOR” amongst
+           monitoring sites that are labelled as both “RESIDENTIAL”
+           and “SUBURBAN” in the eastern U.S., where eastern is
+           defined as Longitude greater than or equal to -100?
+           #+BEGIN_SRC R
+
+             big_one <- full_join(aqs_sites, daily_SPEC_2014)
+
+             median((big_one %>%
+                     filter(`Land Use` == "RESIDENTIAL"
+                          , `Location Setting` == "SUBURBAN"
+                          , `Parameter.Name` == "EC PM2.5 LC TOR"
+                          , `Longitude` >= -100) %>%
+                     select(`Arithmetic.Mean`))$`Arithmetic.Mean`)
+           #+END_SRC
+        8. Amongst monitoring sites that are labeled as COMMERCIAL for
+           "Land Use", which month of the year has the highest average
+           levels of "Sulfate PM2.5 LC"?
+           #+BEGIN_SRC R
+             commercial_sulfate <- (big_one %>%
+                 filter(`Land Use` == "COMMERCIAL",
+             `Parameter.Name` == "Sulfate PM2.5 LC") %>%
+             select(date = `Date.Local`, obs = `Arithmetic.Mean`))
+
+             commercial_sulfate  %>%
+                 group_by(month = floor_date(as.POSIXct.Date(date), "month")) %>%
+                 summarise(mean = mean(obs)) %>%
+                 arrange(desc(mean))
+           #+END_SRC
+        9. for how many days is the sum of "Sulfate PM2.5 LC" and
+           "Total Nitrate PM2.5 LC" greater than 10?
+           #+BEGIN_SRC R
+             ## Shrink the data to what we need to make it more manageble.
+             local_Sulfate_Nitrate <- (big_one %>%
+                                       filter(`State Code` == 6
+                                            , `County Code` == 65
+                                            , `Site Number` == 8001
+                                            , grepl('Sulfate PM2.5 LC|Total Nitrate PM2.5 LC',
+                                                    `Parameter.Name` )) %>%
+                                       select(date = `Date.Local`
+                                            , parameter = `Parameter.Name`
+                                            , obs = `Arithmetic.Mean`))
+
+
+             ## Get the mean values for each day on each parameter
+             summarry_local_Sulfate_Nitrate <- local_Sulfate_Nitrate %>% 
+             group_by(date, parameter) %>%
+                 summarise(mean(`obs`)local_Sulfate_Nitrate %>% 
+                                      group_by(date, parameter) %>%
+                                      summarise(mean(`obs`)))
+
+
+             ((summarry_local_Sulfate_Nitrate %>%
+               filter(grepl('ulfate' , parameter)))
+                 +
+                 (summarry_local_Sulfate_Nitrate %>%
+                  filter(grepl('itra' ,parameter)))) %>%
+                 filter(`mean(obs)` > 10)
+           #+END_SRC
+        10. Which monitoring site in the dataset has the highest
+            correlation between "Sulfate PM2.5 LC" and "Total Nitrate
+            PM2.5 LC" across all dates?
+            #+BEGIN_SRC R
+              all_Sulfate <- (daily_SPEC_2014
+                  %>% filter(`Parameter.Name` == "Sulfate PM2.5 LC")
+                  %>% select(State=`State.Code`
+                           , County=`County.Code`
+                           , Site=`Site.Num`
+                           , obs=`Arithmetic.Mean`
+                           , date=`Date.Local`)
+                  %>% group_by(State
+                             , County
+                             , Site
+                             , date)
+                  %>% summarise(value_Sulfate=mean(`obs`)))
+
+              total_total__Nitrate <- (daily_SPEC_2014 
+                  %>% filter(`Parameter.Name` == "Total Nitrate PM2.5 LC") 
+                  %>% select(State=`State.Code`
+                           , County=`County.Code`
+                           , Site=`Site.Num`
+                           , obs=`Arithmetic.Mean`
+                           , date=`Date.Local`)
+                  %>% group_by(State
+                             , County
+                             , Site
+                             , date)
+                  %>% summarise(value_Nitrate=mean(`value`)))
+
+              both_S_and_N <- (inner_join(total_total__Nitrate
+                                       , all_Sulfate))
+
+
+              both_S_and_N
+              %>% group_by(State, County, Site)
+              %>% summarise(correlation=cor(`value_Sulfate`
+                                          , `value_Nitrate`
+                                          , use = "complete.obs"))
+              %>% arrange(desc(correlation))
+            #+END_SRC
+
+*** [[http://r4ds.had.co.nz/][R]] for Data Science
+***** Data visualisation
+      
