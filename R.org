@@ -272,6 +272,16 @@
               %>% arrange(desc(correlation))
             #+END_SRC
 
+***** R-advc-prog
+******* Quiz Errata:
+        What does the traceback() function do?
+        returns the state of the function call stack just before an occurred
+        -- should be "prints the state"
+        it is the function .traceback() that returns the call stack, traceback() pretty-prints it.
+        Maybe it's a small difference, but it was emphasized in traceback's docs.
+******* Reading Notes
+********* 
+
 *** [[http://r4ds.had.co.nz/][R]] for Data Science
 ***** Data visualisation
       
