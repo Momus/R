@@ -1,10 +1,6 @@
 ## Peer-graded Assignment: Functional and Object-Oriented Programming
 ## Part 1: Factorial Function
 
-########
-## Please note: calls to library() are made next to the functions that
-## require that specific library to illustrate what needs what.
-#######
 
 ## Write a function that computes the factorial of an integer greater
 ## than or equal to 0.
@@ -13,6 +9,8 @@
 ## of 0 is defined to be 1.
 
 ## Write four different versions of the Factorial function:
+
+library(tidyverse)
 
 ##################
 ## Factorial_loop: compute the factorial of an integer
@@ -73,16 +71,101 @@ Factorial_mem <- function(x){
 }
 
 
+
+## use the microbenchmark package to time the operation of these
+## functions and provide a summary of their performance.
+library(microbenchmark)
+fact_10 <- print(microbenchmark(Factorial_loop(10),
+                         Factorial_reduce(10),
+                         Factorial_func(10),
+                         Factorial_mem(10),
+                         times = 1000L,
+                         unit = 'ms'))
+
+fact_100 <- print(microbenchmark(Factorial_loop(100),
+                         Factorial_reduce(100),
+                         Factorial_func(100),
+                         Factorial_mem(100),
+                         times = 1000L,
+                         unit = 'ms'))
+
+fact_max <- print(microbenchmark(Factorial_loop(170),
+                         Factorial_reduce(170),
+                         Factorial_func(170),
+                         Factorial_mem(170),
+                         times = 1000L,
+                         unit = 'ms'))
+
+run_range <- function (s_size, Fact_function) {
+    map(sample.int(170, size=s_size, replace=TRUE),
+        Fact_function)
+}
+
+fact_random_10 <- print(microbenchmark(run_range(10, Factorial_loop),
+                                      run_range(10,Factorial_reduce),
+                                      run_range(10,Factorial_func),
+                                      run_range(10,Factorial_mem),
+                                      times = 50L,
+                                      unit = 'ms'))
+
+fact_random_100 <- print(microbenchmark(run_range(100, Factorial_loop),
+                                       run_range(100,Factorial_reduce),
+                                       run_range(100,Factorial_func),
+                                       run_range(100,Factorial_mem),
+                                       times = 50L,
+                                       unit = 'ms'))
+
+
+fact_random_1000 <- print(microbenchmark(run_range(1000, Factorial_loop),
+                                        run_range(1000,Factorial_reduce),
+                                        run_range(1000,Factorial_func),
+                                        run_range(1000,Factorial_mem),
+                                        times = 50L,
+                                        unit = 'ms'))
+
+
+##In addition to timing your functions for specific inputs, make sure
+##to show a range of inputs in order to demonstrate the timing of each
+##function for larger inputs.
+
+bench_print <- function(benchmark_frame){
+    select(benchmark_frame, expr, min, mean, median, max)
+}
+
+
+
+sink("./factorial_output.txt")
+cat("=================================================\n")
+cat("All units are microseconds\n")
+cat("=================================================\n")
+cat("Single value, 1000 times.\n")
+cat("-------------------------------------------------\n")
+bench_print(fact_10)
+cat("-------------------------------------------------\n")
+bench_print(fact_100)
+cat("-------------------------------------------------\n")
+bench_print(fact_max)
+cat("-------------------------------------------------\n")
+cat("=================================================\n")
+cat("Functions mapped to a vector of integers 1-170, run 50 times\n")
+bench_print(fact_random_10)
+cat("-------------------------------------------------\n")
+bench_print(fact_random_100)
+cat("-------------------------------------------------\n")
+bench_print(fact_random_1000)
+cat("-------------------------------------------------\n")
+cat("=============================\n")
+sink()
+
+
+
 #########The two functions below are extra: not part of assignment.
 #
 ## There are two types of recursion: Regular and Extra Crispy. And by
 ## Extra-Crispy, I mean tail-call.
 Factorial_tail <- function(x, fact = 1){
-    stopifnot(x > 0)
     if (x == 0) return(fact)
-    next_fact <- x * fact
-    next_x <- x - 1
-    Factorial_func(next_x, next_fact)
+    Factorial_tail((x - 1), (x * fact))
 }
 
 ## Intermediate steps aren't calculated (factorial is like a
@@ -107,58 +190,56 @@ Factorial_memtail <- function(x, fact = 1, original_x = -1){
         Factorial_memtail(next_x, next_fact, original_x)
     }
 }
-#
-#########The two functions above are extra: not part of assignment.
-###################################################################
-
-## use the microbenchmark package to time the operation of these
-## functions and provide a summary of their performance.
-library(microbenchmark)
-fact_10 <- microbenchmark(Factorial_loop(10),
-                         Factorial_reduce(10),
-                         Factorial_func(10),
-                         Factorial_mem(10),
-                         times = 1000L)
-
-fact_100 <- microbenchmark(Factorial_loop(100),
-                         Factorial_reduce(100),
-                         Factorial_func(100),
-                         Factorial_mem(100),
-                         times = 1000L)
-
-fact_max <- microbenchmark(Factorial_loop(170),
-                         Factorial_reduce(170),
-                         Factorial_func(170),
-                         Factorial_mem(170),
-                         times = 1000L)
 
 
-##In addition to timing your functions for specific inputs, make sure
-##to show a range of inputs in order to demonstrate the timing of each
-##function for larger inputs.
-library(purrr)
-library(dplyr)
-f10 <- print(fact_10) %>% select(expr, min, mean, median, max)
 
-sink("./factorial_output.txt")
-cat("
-fmax
+
+tail_max <- print(microbenchmark(Factorial_func(170),
+                                Factorial_tail(170),
+                                Factorial_mem(170),
+                                Factorial_memtail(170),
+                                times = 1000L,
+                                unit = 'ms'))
+
+
+
+
+tail_random_100 <- print(microbenchmark(run_range(100, Factorial_func),
+                                       run_range(100,Factorial_tail),
+                                       run_range(100,Factorial_mem),
+                                       run_range(100,Factorial_memtail),
+                                       times = 50L,
+                                       unit = 'ms'))
+
+
+tail_random_1000 <- print(microbenchmark(run_range(1000, Factorial_func),
+                                        run_range(1000,Factorial_tail),
+                                        run_range(1000,Factorial_mem),
+                                        run_range(1000,Factorial_memtail),
+                                        times = 50L,
+                                        unit = 'ms'))
+
+sink("./regular_v_tail__output.txt")
+cat("=================================================\n")
+cat("Single value, 1000 times.\n")
+cat("-------------------------------------------------\n")
+bench_print(tail_max)
+cat("-------------------------------------------------\n")
+cat("=================================================\n")
+cat("Functions mapped to a vector of integers 1-170, run 50 times\n")
+bench_print(tail_random_100)
+cat("-------------------------------------------------\n")
+bench_print(tail_random_1000)
+cat("-------------------------------------------------\n")
+cat("=============================\n")
 sink()
 
-## writeLines(print(fact_10),
-##             file = "./factorial_output.txt",
-##             append = FALSE)
-
-## write.table(fact_100,
-##             file = "./factorial_output.txt",
-##             append = TRUE)
-
-## write.table(fact_max,
-##             file = "./factorial_output.txt",
-##             append = TRUE)
 
 
 
+                                        #
+#########The two functions above are extra: not part of assignment.
+###################################################################
 
 
 
