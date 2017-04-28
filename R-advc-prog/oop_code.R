@@ -33,7 +33,6 @@ subject <- function(LD_obj, pt_id){
               class = "subject")
 }
 
-
 print.subject <-  function(LD_subject){
     if (is.na(LD_subject$data[1,1])) return(NULL)
     else cat("Subject ID: ", LD_subject$ID, "\n")
@@ -43,13 +42,38 @@ print.subject <-  function(LD_subject){
 summary.subject <-  function(LD_subject){
     no_na_mean <-
         partial(mean, na.rm=TRUE)
-    cat(cat("ID: ", LD_subject$ID, "\n"),
-    print(LD_subject$data %>%
+    
+    summaryout <- LD_subject$data %>%
         spread(key=room, value=value)%>%
         select(-timepoint) %>%
         group_by(visit) %>%
-        summarise_each(funs(no_na_mean))))
+        summarise_each(funs(no_na_mean))
+
+    ## We still need to mangle it some more in its very own print
+    ## function, so let's give it some class, and let it remember it's ID
+    class(summaryout) <- append(class(summaryout)
+                             , "SubjectSummary"
+                             , after=0) # New class must be at front
+                                        # of vector to use its special
+                                        # function.
+
+    attr(summaryout,"ID") <- LD_subject$ID
+    
+    summaryout
 }
+
+
+##Mangle output to look like assignment wants
+print.SubjectSummary <- function(LD_SubjectSummary){
+    
+    ## Replace NaN's with NA's
+    LD_SubjectSummary[sapply(LD_SubjectSummary, is.na)] = NA
+    
+    ## Print it like the model
+    cat("ID: ", attr(LD_SubjectSummary, "ID"), "\n")
+    print.data.frame(LD_SubjectSummary)
+}
+
 
 
 #A visit is to a single subject.
@@ -65,12 +89,12 @@ visit <- function(LD_subject, visit_number){
 }
 
 ##A room belongs to a single subject on a single visit
-room <- function(LD_visit, room){
-    data <- LD_visit$data %>%
-        filter(`room` == room) %>%
-        select(-`room`)
+room <- function(LD_visit, room_name){
+    new_data <- (LD_visit$data %>%
+                filter(`room` == room_name) %>%
+                select(-`room`))
     
-        structure(list(data = data,
+    structure(list(data = new_data,
                        "ID" = LD_visit$ID,
                        "Visit" = LD_visit$Visit,
                        "Room" = room),
@@ -86,5 +110,16 @@ print.room <- function(LD_room){
 
 
 summary.room <- function(LD_room){
-    (LD_room$data)$value  %>% summary
+    room_out <- LD_room
+    room_out$data <- (room_out$data)$value  %>% summary
+    class(room_out) <- append(class(room_out)
+                             , "RoomSummary"
+                             , after=0)
+    room_out
+}
+
+
+print.RoomSummary <- function(RoomSummary){
+    cat("ID: ", RoomSummary$ID, "\n")
+    RoomSummary$data
 }
