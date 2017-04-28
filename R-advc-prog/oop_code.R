@@ -97,7 +97,7 @@ room <- function(LD_visit, room_name){
     structure(list(data = new_data,
                        "ID" = LD_visit$ID,
                        "Visit" = LD_visit$Visit,
-                       "Room" = room),
+                       "Room" = room_name),
                   class = "room")
 }
 
