@@ -283,5 +283,7 @@
 ********* 
 
 *** [[http://r4ds.had.co.nz/][R]] for Data Science
+***** Data transformation
+******* Exercises
 ***** Data visualisation
       
