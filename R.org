@@ -280,8 +280,62 @@
         it is the function .traceback() that returns the call stack, traceback() pretty-prints it.
         Maybe it's a small difference, but it was emphasized in traceback's docs.
 ******* Reading Notes
-********* 
+***** Packages
+******* Mandatory structure:
+*********  DESCRIPTION
+          - contains meta data used by R and repos.
+            - name
+            - version number
+            - author and maintainer info
+            - license
+            - dependencies.
+*********  NAMESPACE
+          "Specifies the interface to the package that is presented to
+          the user."
+          - export() :: indicate which functions in the package are
+                        exported to the user.
+          - import() :: imports needed functions. Takes a package name
+                        and makes all functions in that package
+                        available.
 
+          - importedFrom() :: allows the import of specific functions
+                              from a package.
+                              #+BEGIN_SRC R
+                                importFrom("grDevices", "colorRampPalette", "gray")
+                              #+END_SRC
+********* ./R :: the code
+********* ./man :: the docs
+          Used to be: written directly in a \LaTeX format. Nowadays,
+          roxygen2 docs are written into the code files, then
+          generated.
+
+******* Function's full name:
+        - <package name>::<exported function name>
+        - can be used to call a function not specifically exported by
+          a package.
+******* Loading vs Attaching
+        - When a package is loaded by another package, it's name space
+          is made available only to that package.
+        - When a package attaches a name space, it is placed on the
+          search list, making it visible to the user and other packages.
+        
+******* Documentation:
+        - Longer docs like tutorials or overviews of the whole package
+        - Shorter, function-specific help files
+********* Vignette
+          - bundled with both CRAN and _maybe_ git hub. Unnecessary if
+            git-hub only.
+          - stored in the ./vignettes sub directory
+          - devtools::use_vignette("model details") creates them.
+            - remember to update the index entry in the vignette's
+              YAML code to add real title, & c.
+          - more than one allowed per package, but one should give
+            general overview.
+          - 
+********* README
+          - Git-hub wants this.
+          - To include R code, use devtools to README.Rmd 
+********* 
 *** [[http://r4ds.had.co.nz/][R]] for Data Science
 ***** Data transformation
 ******* Exercises
