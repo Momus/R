@@ -90,8 +90,7 @@ fars_read_years <- function(years) {
         })
 }
 
-#' @export
-#' 
+
 #' Produce a summary of the number of accidents each month in the given years.
 #'
 #' @description For each year passed into the function, create a
@@ -109,11 +108,14 @@ fars_read_years <- function(years) {
 #' that year.
 #' 
 #' 
-#' @importFrom dplyr bind_rowns group_by summarize
+#' @importFrom dplyr bind_rows group_by summarize
 #' @importFrom tidyr spread
 #' 
 #' @examples
 #' \code{fars_summarize_years(c("2014", 2015))}
+#' \code{fars_summarize_years(2015)}
+#' 
+#' @export
 fars_summarize_years <- function(years) {
         dat_list <- fars_read_years(years)
         dplyr::bind_rows(dat_list) %>% 
@@ -155,6 +157,7 @@ fars_summarize_years <- function(years) {
 #' @examples
 #' \code{fars_map_state(1, 2015)
 #' 
+#' @export
 fars_map_state <- function(state.num, year) {
         filename <- make_filename(year)
         data <- fars_read(filename)
