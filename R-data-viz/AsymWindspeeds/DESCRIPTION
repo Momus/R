@@ -1,0 +1,9 @@
+Package: AsymWindspeeds
+Title: Map Asymetrical Windspeeds of a Hurricane.
+Version: 0.0.0.9000
+Authors@R: person("Dmitri", "Brengauz", email = "dmitri@momus.net", role = c("aut", "cre"))
+Description: This was done to complete the Johns Hopkins R visualization course.
+Depends: R (>= 3.3.3)
+License: GPL3
+Encoding: UTF-8
+LazyData: true

@@ -280,6 +280,21 @@
         it is the function .traceback() that returns the call stack, traceback() pretty-prints it.
         Maybe it's a small difference, but it was emphasized in traceback's docs.
 ******* Reading Notes
+***** Visualization: Project
+******* Download storm data:
+        - Atlantic basin, 1988-2015
+******* Tidy Dataset into "long" format
+        1. add column for storm_id: combining storm name and year
+        2. format long:
+           1. numeric
+           2. negative values for Western hemisphere
+        3. format and combine date and time columns to create datetime
+           for each observation.
+        4. Convert data to a "long" format:
+           1. separate rows for each of the three wind speeds for wind radii
+******* Subset to the specific hurricacane (Ike) and to a single observation time.
+******* Write 
+******* 
 ***** Packages
 ******* Mandatory structure:
 *********  DESCRIPTION
@@ -340,4 +355,11 @@
 ***** Data transformation
 ******* Exercises
 ***** Data visualisation
-      
+* [[https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/][Bare Minumum]] R Packages.
+*** Needed tools:
+    #+BEGIN_SRC R
+      library(devtools)
+      library(roxygen2)
+
+
+    #+END_SRC
