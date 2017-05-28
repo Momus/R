@@ -1,7 +1,8 @@
 #' Maping wind speeds of a hurricane.
 library(tidyverse)
 library(lubridate)
-library(data.table)
+library(dtplyr)
+
 
 #' Download the dataset
 #' http://rammb.cira.colostate.edu/research/tropical_cyclones/tc_extended_best_track_dataset/
@@ -38,7 +39,7 @@ caine_columns <- "_cccccdd______dddddddddddd__"
 
 
 ext_tracks <- read_fwf("./data/Atlantic_1988_2015.txt", 
-                      fwf_widths(ext_tracks_widths, ext_tracks_colnames),
+                      fwf_widths(caine_widths, ext_tracks_colnames),
                       col_types = caine_columns,
                       na = "-99")
 
@@ -68,22 +69,22 @@ Ike <-  ext_tracks %>%
 ##use: x <- function(y){print(match.call())[2]}
 
 
-NEIke <- select(datedIke, storm_id, date, latitude, longitude,
+NEIke <- select(Ike, storm_id, date, latitude, longitude,
                 `34` = `34NE`, `50` = `50NE`,  `64` = `64NE`) %>%
     gather(`34`, `50`, `64`, key="wind_speed", value="NE")
 
 
-SEIke <- select(datedIke, storm_id, date, latitude, longitude,
+SEIke <- select(Ike, storm_id, date, latitude, longitude,
                `34` = `34SE`, `50` = `50SE`, `64` = `64SE`) %>%
     gather(`34`, `50`, `64`, key="wind_speed", value="SE")
 
 
-NWIke <- select(datedIke, storm_id, date, latitude, longitude,
+NWIke <- select(Ike, storm_id, date, latitude, longitude,
                `34` = `34NW`, `50` = `50NW`, `64` = `64NW`) %>%
     gather(`34`, `50`, `64`, key="wind_speed", value="NW")
 
 
-SWIke <- select(datedIke, storm_id, date, latitude, longitude,
+SWIke <- select(Ike, storm_id, date, latitude, longitude,
                `34` = `34SW`, `50` = `50SW`, `64` = `64SW`) %>%
     gather(`34`, `50`, `64`, key="wind_speed", value="SW")
 
