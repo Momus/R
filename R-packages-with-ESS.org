@@ -1,0 +1,4 @@
+* Creating a New Package
+*** Start an R process in the parent directory of the package you want to create.
+*** 
+* 
