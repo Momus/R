@@ -3,28 +3,6 @@
 #+STARTUP: hideblocks
 #+BABEL: :session *R*
 
-* R install thingies
-  
-* Emacs Speaks Statistics Tutorial
-*** Installation
-***** Melpa (package-install ess)
-***** use-package
-      #+BEGIN_SRC emacs-lisp
-        (use-package ess
-          :ensure t
-          :init (require 'ess-site))
-      #+END_SRC
-***** Swirl
-******* Set a default [[https://cran.r-project.org/mirrors.html][mirror]]
-        Make sure that the package `openssl-devel` is installed, then:
-        ~/.Rprofile
-        /usr/lib64/R/library/base/R/Rprofile
-        #+BEGIN_SRC R
-          # set a CRAN mirror
-           local({r <- getOption("repos")
-                 r["CRAN"] <- "http://my.local.cran"
-                 options(repos=r)})
-        #+END_SRC
 * Notes
 *** Coursera
 ***** R Crash Syntax
@@ -355,11 +333,152 @@
 ***** Data transformation
 ******* Exercises
 ***** Data visualisation
+*** Murrell: R Graphics 2nd Ed
+***** Chapter 5: The ggplot2 Package
+******* Setup for data for examples:
+        #+BEGIN_SRC R
+          data("mtcars")
+          mtcars2 <- mtcars
+          mtcars2$trans <- factor(mtcars$am, 
+                                 levels=0:1, 
+                                 labels=c("automatic", "manual"))
+          mtcars2$gear <- as.factor(mtcars$gear)
+          mtcars2$am <- NULL
+          mtcars2$vs <- NULL
+          mtcars2$drat <- NULL
+          mtcars2$carb <- NULL
+          mtcars2$wt <- NULL
+          mtcars2$hp <- NULL
+          mtcars2$qsec <- NULL
+          p <- ggplot(mtcars2)
+        #+END_SRC
+******* Map vs set aesthetic:
+        In the graph
+        #+BEGIN_SRC R
+          p + geom_point(aes(x=disp, y=mpg, shape=gear),
+                         size=4)
+        #+END_SRC
+        The variable "gear" is _mapped_ to the aesthetic shape in the
+        aes() function call. Howervever, the "size" aesthetic is _set_
+        to a constant value outside of the aes() call.
+******* All geoms have the following aesthetics:
+        - color
+        - size
+        - group
+******* Scales
+        Scales are usually added automatically, but you can add a
+        scale component is to override various derails like:
+        - the labels of the axes:
+          #+BEGIN_SRC R
+          p + geom_point(aes(x=disp, y=mpg)) +
+              scale_y_continuous(name="miles per gallon") +
+              scale_x_continuous(name = "displacement (cu.in.)")
+          #+END_SRC
+        - limits of the axes:
+          #+BEGIN_SRC R
+            p + geom_point(aes(x=disp, y=mpg)) +
+                scale_y_continuous(name = "miles per gallon",
+                                   limits = c(0,40))
+          #+END_SRC
+        - change the colors used on the scale:
+          #+BEGIN_SRC R
+            p + geom_point(aes(x=disp, y=mpg, 
+                               color=trans), size=4) +
+                scale_y_continuous(name = "miles per gallon") +
+                scale_color_manual(values=c(automatic=gray(2/3),
+                                            manual=grey(1/3)))
+          #+END_SRC
+******* Statistical transformations
+        Either use a stat_layer:
+        #+BEGIN_SRC R
+        p + geom_smooth(aes(x=disp, y=mpg), method="lm")
+        #+END_SRC
+        or you can modify in the geom_ call:
+        #+BEGIN_SRC R
+        p + geom_line(aes(x=disp, y=mpg), stat = "smooth", method="loess")
+        #+END_SRC
+        won't work without the "method" parameter.
+******* The `group` aesthetic
+        Groups things:
+        #+BEGIN_SRC R
+          p + geom_point(aes(x=disp, y=mpg)) + 
+              stat_smooth(aes(x=disp, y=mpg, group=trans), 
+                          method = "lm")
+        #+END_SRC
+******* Position Adjustments
+        #+BEGIN_SRC R
+          p + geom_bar(aes(x=trans, fill=factor(cyl)), color="black") +
+              scale_fill_manual(values = gray(1:3/3))
+        #+END_SRC
+        This automatically "adjusts" the position of the bars to stack one on top of
+        the other. You can also have them side by side:
+        #+BEGIN_SRC R
+          p + geom_bar(aes(x=trans, fill=factor(cyl)), color="black",
+                       position = "dodge") +
+              scale_fill_manual(values = gray(1:3/3))
+        #+END_SRC
+        Or as fill:
+        #+BEGIN_SRC R
+          p + geom_bar(aes(x=trans, fill=factor(cyl)), color="black",
+                       position = "fill") +
+              scale_fill_manual(values = gray(1:3/3))
+        #+END_SRC
+        expands bars to use all available space and produces a spine plot.
+******* Coordinate transformations
+********* Use log axes on a plot:
+          #+BEGIN_SRC R
+            p + geom_point(aes(x=disp, y=mpg)) +
+                scale_x_continuous(trans="log") +
+                scale_y_continuous(trans="log") +
+                geom_line(aes(x=disp, y=mpg),
+                          stat = "smooth",
+                          method = "lm")
+          #+END_SRC
+          Note the stat is calculated after transformation, so the
+          "smooth" line is based on the log axes.
+********* Coordinate Sty stems
+          #+BEGIN_SRC R
+            p + geom_point(mapping =  aes(x=disp, y=mpg)) +
+                scale_x_continuous(trans="log") +
+                scale_y_continuous(trans="log") +
+                geom_line(mapping = aes(x=disp, y=mpg), stat="smooth",
+                          method="lm") +
+                coord_trans(x="exp", y="exp")
+          #+END_SRC
+          In this case the coord_trans reverse the effect of the log
+          scales.
+          You can also do polar coordinates:
+          #+BEGIN_SRC R
+            p + geom_bar(mapping = aes(x="", fill=trans)) +
+                scale_fill_manual(values = gray(1:2/3)) +
+                coord_polar(theta="y")
+          #+END_SRC
+******* Facets
+        I don't care right now
+******* Themes
+        
+        
+
+* Emacs Speaks Statistics Tutorial
+*** Installation
+***** Melpa (package-install ess)
+***** use-package
+      #+BEGIN_SRC emacs-lisp
+        (use-package ess
+          :ensure t
+          :init (require 'ess-site))
+      #+END_SRC
+***** Swirl
+******* Set a default [[https://cran.r-project.org/mirrors.html][mirror]]
+        Make sure that the package `openssl-devel` is installed, then:
+        ~/.Rprofile
+        /usr/lib64/R/library/base/R/Rprofile
+        #+BEGIN_SRC R
+          # set a CRAN mirror
+           local({r <- getOption("repos")
+                 r["CRAN"] <- "http://my.local.cran"
+                 options(repos=r)})
+        #+END_SRC
 * [[https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/][Bare Minumum]] R Packages.
 *** Needed tools:
-    #+BEGIN_SRC R
-      library(devtools)
-      library(roxygen2)
 
-
-    #+END_SRC
