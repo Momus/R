@@ -361,10 +361,10 @@
         The variable "gear" is _mapped_ to the aesthetic shape in the
         aes() function call. Howervever, the "size" aesthetic is _set_
         to a constant value outside of the aes() call.
-******* All geoms have the following aesthetics:
-        - color
-        - size
-        - group
+********* All geoms have the following aesthetics:
+          - color
+          - size
+          - group
 ******* Scales
         Scales are usually added automatically, but you can add a
         scale component is to override various derails like:
@@ -456,7 +456,39 @@
 ******* Facets
         I don't care right now
 ******* Themes
-        
+        This section is really out-of-date.
+        #+BEGIN_SRC R
+          p + geom_point(aes(x=dsp, y=mpg)) +
+              theme_dark()
+         #+END_SRC
+******* Annotating
+        Two possible approaches:
+        - quick and dirty :: just set aesthetics rather than mapping
+             them:
+             #+BEGIN_SRC R
+               p + geom_point(aes(x=disp, y=mpg)) +
+                   geom_hline(yintercept = 29)
+             #+END_SRC
+        - layering in geoms :: specify a new data source for the geom:
+             #+BEGIN_SRC R
+               gcLimits <- data.frame(category=c("2WD car" ,
+                                     "4WD car" ,
+                                     "2WD small pick-up truck" ,
+                                     "4WD small pick-up truck" ,
+                                     "2WD std pick-up truck" ,
+                                     "4WD std pick-up truck" ),
+                          limit=c(29, 24, 20, 18, 17, 16))
+
+               p + geom_point(aes(x=disp, y=mpg)) +
+                   geom_hline(data=gcLimits,
+                              aes(yintercept=limit),
+                              linetype="dotted") +
+                   geom_text(data = gcLimits,
+                             aes(y=limit + .1, label=category),
+                             x=70, hjust=0, vjust=0, size=3)               
+             #+END_SRC
+***** Chapter 6: The grid Graphics Model
+******* 
         
 
 * Emacs Speaks Statistics Tutorial
