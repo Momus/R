@@ -488,7 +488,29 @@
                              x=70, hjust=0, vjust=0, size=3)               
              #+END_SRC
 ***** Chapter 6: The grid Graphics Model
-******* 
+      The grid graphics system provides low-level graphics functions.
+******* Overview
+        Grid follows the painters model: later output obscuring any
+        earlier output it overlaps.
+********* Example
+          #+BEGIN_SRC R
+            pushViewport(plotViewport(c(5,4,2,2)))
+            pushViewport(dataViewport(pressure$temperature,
+                                      pressure$pressure,
+                                      name="plotRegion"))
+            grid.rect()
+            grid.xaxis()
+            grid.yaxis()
+            grid.edit("dataSymbols", pch=2)
+            grid.text("tempreature", y=unit(-3, "line"))
+            grid.text("pressure", x=(unit-3, "line"), rot=90)
+            upViewport(2)
+            grid.rect(gp=gpar(lty="dashed"))
+            downViewport("plotRegion")
+            grid.text("Pressure (mm Hg) \nversus\nTemprature (Celcius)",
+                      x=unit(150, "native"), y=unit(600, "native"))
+          #+END_SRC
+******* Graphical primitives
         
 
 * Emacs Speaks Statistics Tutorial
