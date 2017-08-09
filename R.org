@@ -498,6 +498,8 @@
             pushViewport(dataViewport(pressure$temperature,
                                       pressure$pressure,
                                       name="plotRegion"))
+            grid.points(pressure$temperature, pressure$pressure, name="dataSymbols")
+            grid.edit("dataSymbols", pch=2)
             grid.rect()
             grid.xaxis()
             grid.yaxis()
