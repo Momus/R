@@ -513,7 +513,295 @@
                       x=unit(150, "native"), y=unit(600, "native"))
           #+END_SRC
 ******* Graphical primitives
+        There are lots of them:
+        | Output Function  | Description                               | Object Function |
+        |------------------+-------------------------------------------+-----------------|
+        | grid.move.to()   | Set current location.                     | moveToGrob()    |
+        | grid.line.to()   | Line to new location; set current to new. | lineToGrob()    |
+        | grid.lines()     | Single line--multiple locations.          | linesGrob()     |
+        | grid.polyline()  | Multiple lines--multiple locations.       | polylineGrob()  |
+        | grid.segments()  | Multiple lines--pairs of locations.       | segmentsGrob()  |
+        | grid.xspline     | Smooth curve relative to control points.  | xsplineGrob()   |
+        | grid.rect()      | Rectangles given locations and sizes.     | rectGrob()      |
+        | grid.roundrect() | Rectangles with rounded corners.          | roundrectGrob() |
+        | grid.circle()    | Draw circles given locations and radii.   | circleGrob()    |
+        | grid.polygon()   | Draw polygons given vertexes.             | polygonGrob()   |
+        | grid.path()      | Single polygon consisting multiple paths. | pathGrob()      |
+        | grid.text()      | Text given strings, locations, rotations  | textGrob()      |
+        | grid.raster()    | Draw bitmap image                         | rasterGrob()    |
+        | grid.curve()     | Smooth curve between two endpoints.       | curveGrob()     |
+        | grid.points()    | Draw data symbols given locations.        | pointsGrob()    |
+        | grid.xaxis()     | Draw the x-axis.                          | xaxisGrob()     |
+        | grid.yaxis()     | Draw the y-axis.                          | yaxisGrob()     |
+        |------------------+-------------------------------------------+-----------------|
         
+        They are used in various ways. Below is an example how the
+        "id" parameter, can be used to group points to draw a square
+        inside of a nonagon:
+        #+BEGIN_SRC R
+          angle <- seq(0, 2*pi, length=10)[-10]
+          grid.path(x=0.25 + .15*cos(angle),
+                    y=0.5 + 0.3*sin(angle),
+                    gp=gpar(fill="purple"))
+          grid.path(x=c(0.75 + 0.15*cos(angle),  .7, .7, .8, .8),
+                    y=c(0.5 + 0.3*sin(angle), .4, .6, .6, .4),
+                    id=rep(1:2, c(9,4)),
+                    gp=gpar(fill="pink"))
+        #+END_SRC
+********* Standard Arguments
+          - gp = :: graphical parameters.
+                    #+BEGIN_SRC R
+                    grid.rect(gp=gpar(col="red", lty="dashed"))
+                    #+END_SRC
+          - vp :: view port
+                  #+BEGIN_SRC R
+                  grid.rect(vp=viewport(x=0, width=0.5, just="left"))
+                  #+END_SRC
+          - name :: name to be used in later editing.
+                    #+BEGIN_SRC R
+                    grid.rect(name="myrect")
+                    #+END_SRC
+********* Clipping
+          grid.clip() specifies the clipping rectangle. After the
+          function has been called, any subsequent drawing will only
+          be visible if it occurs inside the clipping rectangle.
+          This can be reset by calling grid.clip() again, or by
+          changing the view port.
+******* Coordinate Systems
+        - unit() :: specify which coordinate system a location or size
+                    belongs to.
+        | Coordinate System | Description                                    |
+        |-------------------+------------------------------------------------|
+        | "native"          | relative to x- & y- scales for view port       |
+        | "npc"             | Normalized Parent Coordinates                  |
+        | "snpc"            | Square N.P.C.: _smaller_ of hidth or width.    |
+        | "in"              | physical inches                                |
+        | "cm"              | centimeters                                    |
+        | "mm"              | millimeters                                    |
+        | "pt"              | Points: 72.27 per inch                         |
+        | "bgpts"           | Big points: 72 per inch                        |
+        | "picas"           | Pica: 12 points per pica                       |
+        | "dida"            | Dida: 1157 dida equals 1238 points             |
+        | "cicero"          | Cicero: 12 dida per cicero                     |
+        | "scaledpts"       | Scaled points. 65,536 scaled points per point. |
+        | "char"            | Multiples of the current font size             |
+        | "line"            | Multiples of a height of a line of text.       |
+        | "strwidth"        | Multiples of the width of a  given string.     |
+        | "strheight"       | Multiples of the height of a  given string.    |
+        | "grobx"           | Multiples of x location on graphical object    |
+        | "groby"           | Multiples of y location on graphical object    |
+        | "bandwidth"       | Multiples of width of a graphic object.        |
+        | "heighten"        | Multiples of height of a graphic object.       |
+        |-------------------+------------------------------------------------|
+
+********* Example:
+          #+BEGIN_SRC R
+            grid.rect(x=unit(0.4, "npc"),
+                      y=unit(1, "in"),
+                      width=stringWidth("very snug"),
+                      height=unit(1, "line")
+                      just = c("left", "bottom"))
+          #+END_SRC
+********* Conversion function
+          #+BEGIN_SRC R
+            convertHeight(unit(1,npc), "in")
+          #+END_SRC
+          Of course, conversions can change if they are view port
+          dependent, like inches, et c.
+********* Complex Units
+          Need to specify an object when using relative units:
+          #+BEGIN_SRC R
+            unit(1, "grobwidth", textGrob("some text"))
+          #+END_SRC
+******* GP :: Graphical Parameters: Controlling the appearance of output
+        The full set available in grid:
+        |------------+--------------------------------------------------------------------|
+        | Parameter  | Description                                                        |
+        |------------+--------------------------------------------------------------------|
+        | col        | Color of lines, text, rectangle borers, &c.,                       |
+        | fill       | The fill color of objects.                                         |
+        | alpha      | Alpha blending coefficient from 0(transparent) to 1(opaque)        |
+        | lwd        | Line width                                                         |
+        | lex        | Line expansion multiplier applied to lwd for final line width      |
+        | lty        | Line type.                                                         |
+        | lineend    | Line end style (round, butt, square)                               |
+        | linejoin   | Line join style (round, miter, bevel)                              |
+        | linemitre  | Line miter limit                                                   |
+        | cex        | Char expansion multiplier applied to fontsize to obtain final size |
+        | fontsize   | Size of text (in points)                                           |
+        | fontface   | Font face ("plain", "bold", "italic", "bold.italic")               |
+        | fontfamily | Font family                                                        |
+        | lineheight | Multiplier applied to final font size to obtain height of a line.  |
+        |------------+--------------------------------------------------------------------|
+
+********* get.gpar()
+          - get.gpar(c("lty", "fill") :: returns just those gpars
+          - get.gpar()  :: return all gpars.
+********* Vectorized Graphical Parameter Settings
+        #+BEGIN_SRC R
+          levels <- round(seq(90, 10, length=25))
+          grays <- paste("gray", c(levels, rev(levels)), sep="")
+          grid.circle(x=seq(0.1, 0.9, length=100),
+                      y=0.5 + 0.4*sin(seq(0, 2*pi, length=100)),
+                      r=abs(0.1 * cos(seq(0, 2*pi, length=100))),
+                      gp=gpar(col=grays))
+        #+END_SRC
+******* Viewports
+        - viewport :: rectangular region that provides a context for
+                      drawing.
+        
+        - drawing context :: consists of a geometric context and a
+             graphical context.
+
+        - geometric context :: set of coordinate systems for locating
+             and sizing the output; all coordinate systems are
+             available with every viewport
+
+        - graphical context :: A `gpar()` object that contains the
+             explicit graphical parameter settings for controlling the
+             appearance of output. Passed via the `gp` argument.
+
+        - default behavior :: grid creates a _root_ viewport that
+             corresponds to the entire page, and until another
+             viewport is created, drawing occurs over the full extent
+             of the page.
+
+        - viewport() :: creates a new viewport. It has a location
+                        (given by x and y), a size (length and
+                        height), and is justified relative to its
+                        location via the `just` argument.
+
+        - example :: viewport left-justified at x-location 0.4 way
+                     across the drawing, bottom-justified 1 cm from
+                     the bottom of drawing region. Et c.
+                     #+BEGIN_SRC R
+                       viewport(x=unit(0.4, "npc"),
+                                y=unit(1, "cm"),
+                                height=unit(6, line),
+                                just=c("left", "bottom"))
+                     #+END_SRC
+                     This will create a viewport object, but to
+                     actually draw it, you have to _push_ it. 
+********* Pushing, popping, navigating between viewports
+          - pushViewport() :: takes a viewport object and uses it to
+                              create a region on the graphics
+                              device. Region used for all subsequent
+                              drawing output until closed or new one
+                              is defined.
+                              #+BEGIN_SRC R
+                                grid.text("top-left corner",
+                                          x=unit(1, "mm"),
+                                          y=unit(1, "npc") - unit(1, "mm"),
+                                          just=c("left", "top"))
+
+                                pushViewport(viewport(width = 0.8,
+                                                      height = 0.5,
+                                                      angle=10,
+                                                      name="vp1"))
+
+                                grid.rect()
+
+                                grid.text("top left corner",
+                                          x=unit(1, "npc"),
+                                          y=unit(1, "npc") - unit(1, "mm"),
+                                          just=c("left", "top"))
+                              #+END_SRC
+          - popViewport() :: revert drawing context to the parent
+                             viewport. Illegal to pop the topmost
+                             viewport that represents the entire
+                             page. Function will return an error.
+                             Called with popViewport(0) will remove
+                             all viewports other than the top.
+          - up/downViewport() :: leaves the viewports on the device as
+               you navigate up and down them. Can be used with
+               viewport names.
+          - grid.move/line.to() :: changes viewports, draws lines.
+          - grid.null() :: with grobX() and grobY() makes it possible
+                           to perform drawing relative to one or more
+                           invisible locations represented by one or
+                           more "null" grobs located in one or more
+                           viewports.
+********* Clipping to viewports
+          Clipping: restrict drawing to the interior to the current
+          viewport:
+         #+BEGIN_SRC R
+           pushViewport(viewport(w=.5, h.5, clip="on"))
+           grid.rect()
+           grid.circle(r=.7, gp=gpar(lwd=20, fill="pink"))
+         #+END_SRC
+********* Viewport lists, stacks, and trees
+          You can `pushViewport(vp1, vp2, vp3)` because it will accept
+          multiple arguments. It will also accept objects containing
+          several viewports: lists, viewport stacks, and viewport
+          trees.
+          - vpList() :: creates a list of viewports pushed in
+                        parallel:
+            1. First viewport is pushed,
+            2. Function navigates up
+            3. Next viewport is pushed.
+          - vpStack():: stack of viewports pushed "in series." Same as
+            pushViewport with multiple arguments.
+          - vpTree() :: creates a tree of viewports that consist of a
+                        parent and any number of child
+                        viewports. First parent is pushed, then
+                        children in parallel within parent.
+*********** Example
+            #+BEGIN_SRC R
+              vp1 <- viewport(name="A")
+              vp2 <- viewport(name="B")
+              vp3 <- viewport(name="C")
+
+              pushViewport(vpList(vp1, vp2, vp3))
+              current.vpTree
+
+              grid.newpage()
+              pushViewport(vpStack(vp1, vp2, vp3))
+              current.vpTree
+
+              grid.newpage()
+              pushViewport(vpTree(vp1, vpList(vp2, vp3)))
+              current.vpTree
+            #+END_SRC
+********* Viewport Path
+          An ordered list of viewport names which specify
+          a series pf parent-child relations.
+********* Viewports as arguments to graphical primitives.
+          #+BEGIN_SRC R
+            #Given a view port:
+            vp1 <- viewport(width = 0.5, height = 0.5, name="vp1")
+
+            ##This code
+            pushViewport(vp1)
+            grid.text("Text drawn in a viewport")
+            popViewport()
+
+            ##Does the same thing as this code:
+            grid.text("Text drawn in a viewport", vp=vp1)
+          #+END_SRC
+********* Graphical Parameter settings in viewports
+          It can haz them.
+          -- affects all objects in vp, even other vps unless
+          overridden, of course.
+          #+BEGIN_SRC R
+            pushViewport(viewport(gp=gpar(fill="pink")))
+            grid.rect(x=0.33, height = 0.7, width = 0.2)
+            grid.rect(x=0.66, height = 0.7, width = 0.2,
+                      gp=gpar(fill="purple"))
+            popViewport()
+          #+END_SRC
+********* Layouts
+          
+******* 
+***** Chapter 7
+
+* Graphic Object Query Functions: A reference
+*** get.gpar()
+    - get.gpar(c("lty", "fill") :: returns just those gpars
+    - get.gpar()  :: return all gpars.
+*** current.*
+    whole bunch of grid functions to tell you stuff.
+***** current.vpTree()
+      shows the view point tree.
 
 * Emacs Speaks Statistics Tutorial
 *** Installation
