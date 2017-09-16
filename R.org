@@ -793,6 +793,13 @@
           
 ******* 
 ***** Chapter 7
+      Create a grid circle object (grob---graphic objet) and draw it to the graphics device.
+      #+BEGIN_SRC R
+        grid.circle(name="circles", x=seq(0.1, 0.9, length=40),
+                    y=0.5 + 0.4*sin(seq(0, 2*pi, length=40)),
+                    r=abs(0.1*cos(seq(0, 2*pi, length=40)))) 
+      #+END_SRC
+******* Standard functions and arguments
 
 * Graphic Object Query Functions: A reference
 *** get.gpar()
